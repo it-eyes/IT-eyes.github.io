@@ -1,0 +1,367 @@
+I"e�<p>本指南提供了 <a href="https://github.com/spring-projects/spring-boot">Spring Boot</a> 如何帮助您加速应用程序开发的示例。 随着您阅读更多 Spring 入门指南，您将看到更多 Spring Boot 用例。 本指南旨在让您快速了解 Spring Boot。 如果您想创建自己的基于 Spring Boot 的项目，请访问 <a href="https://start.spring.io/">Spring Initializr</a>，填写您的项目详细信息，选择您的选项，然后将捆绑的项目下载为 zip 文件。</p>
+
+<h2 id="你将建造什么">你将建造什么</h2>
+<p>您将使用 Spring Boot 构建一个简单的 Web 应用程序，并向其中添加一些有用的服务。</p>
+
+<h2 id="你需要什么">你需要什么</h2>
+
+<ul>
+  <li>约15分钟</li>
+  <li>最喜欢的文本编辑器或 IDE</li>
+  <li><a href="https://www.oracle.com/java/technologies/downloads/">JDK 1.8</a> 或更高版本</li>
+  <li><a href="http://www.gradle.org/downloads">Gradle 4+</a> 或<a href="https://maven.apache.org/download.cgi"> Maven 3.2+</a></li>
+  <li>您还可以将代码直接导入 IDE：
+    <ul>
+      <li><a href="https://spring.io/guides/gs/sts">Spring Tool Suite (STS)</a></li>
+      <li><a href="https://spring.io/guides/gs/intellij-idea/">IntelliJ IDEA</a></li>
+    </ul>
+  </li>
+</ul>
+
+<h2 id="如何完成本指南">如何完成本指南</h2>
+<p>像大多数 <a href="https://spring.io/guides">Spring 入门指南</a>一样，您可以从头开始并完成每个步骤，也可以绕过您已经熟悉的基本设置步骤。 无论哪种方式，您最终都会得到工作代码。</p>
+
+<p>要从头开始，请继续从 <a href="##从SpringInitializr开始">Spring Initializr</a> 开始。</p>
+
+<p>要跳过基础知识，请执行以下操作：</p>
+
+<ul>
+  <li><a href="https://github.com/spring-guides/gs-spring-boot/archive/main.zip">下载</a>并解压本指南的源代码库，或使用 Git 克隆它： <code class="language-plaintext highlighter-rouge">git clone https://github.com/spring-guides/gs-spring-boot.git</code></li>
+  <li>cd 进入 <code class="language-plaintext highlighter-rouge">gs-spring-boot/initial</code></li>
+  <li>跳转到创建一个简单的 Web 应用程序。</li>
+</ul>
+
+<p>完成后，您可以对照 <code class="language-plaintext highlighter-rouge">gs-spring-boot/complete</code> 中的代码检查结果。</p>
+
+<h2 id="了解使用-spring-boot-可以做什么">了解使用 Spring Boot 可以做什么</h2>
+<p>Spring Boot 提供了一种快速构建应用程序的方法。它查看您的类路径和您已配置的 bean，对您缺少的内容做出合理的假设，然后添加这些项目。使用 Spring Boot，您可以更多地关注业务功能，而不是基础设施。</p>
+
+<p>以下示例展示了 Spring Boot 可以为您做什么：</p>
+
+<ul>
+  <li>Spring MVC 在类路径上吗？您几乎总是需要几个特定的​​ bean，Spring Boot 会自动添加它们。 Spring MVC 应用程序还需要一个 servlet 容器，因此 Spring Boot 会自动配置嵌入式 Tomcat。</li>
+  <li>Jetty 在类路径上吗？如果是这样，您可能不想要 Tomcat，而是想要嵌入式 Jetty。 Spring Boot 会为您处理这些问题。</li>
+  <li>Thymeleaf 在类路径上吗？如果是这样，则必须始终将一些 bean 添加到您的应用程序上下文中。 Spring Boot 会为您添加它们。</li>
+</ul>
+
+<p>这些只是 Spring Boot 提供的自动配置的几个示例。同时，Spring Boot 不会妨碍您。例如，如果 Thymeleaf 在您的路径上，Spring Boot 会自动将 <code class="language-plaintext highlighter-rouge">SpringTemplateEngine </code>添加到您的应用程序上下文中。但是如果你用自己的设置定义了自己的 <code class="language-plaintext highlighter-rouge">SpringTemplateEngine</code>，Spring Boot 是不会加一个的。这使您无需付出任何努力即可控制。</p>
+
+<blockquote>
+  <p>Spring Boot 不会生成代码或对文件进行编辑。 相反，当您启动应用程序时，Spring Boot 会动态连接 bean 和设置并将它们应用于您的应用程序上下文。</p>
+</blockquote>
+
+<h2 id="从springinitializr开始">从SpringInitializr开始</h2>
+<p>您可以使用<a href="https://start.spring.io/#!type=maven-project&amp;language=java&amp;platformVersion=2.5.5&amp;packaging=jar&amp;jvmVersion=11&amp;groupId=com.example&amp;artifactId=spring-boot&amp;name=spring-boot&amp;description=Demo%20project%20for%20Spring%20Boot&amp;packageName=com.example.spring-boot&amp;dependencies=web">pre-initialized project</a>并单击 Generate 下载 ZIP 文件。 此项目配置为适合本教程中的示例。</p>
+
+<p>手动初始化项目：</p>
+
+<ol>
+  <li>导航到 <a href="https://start.spring.io/">https://start.spring.io</a>。 该服务提取应用程序所需的所有依赖项，并为您完成大部分设置。</li>
+  <li>选择 Gradle 或 Maven 以及您要使用的语言。 本指南假定您选择了 Java。</li>
+  <li>单击<strong>Dependencies</strong>并选择<strong>Spring Web</strong>。</li>
+  <li>单击<strong>Generate</strong>。</li>
+  <li>下载生成的 ZIP 文件，该文件是根据您的选择配置的 Web 应用程序的存档。</li>
+</ol>
+
+<blockquote>
+  <p>如果您的 IDE 具有 Spring Initializr 集成，您可以从您的 IDE 完成此过程。</p>
+</blockquote>
+
+<blockquote>
+  <p>你也可以从 Github 上 fork 项目并在你的 IDE 或其他编辑器中打开它。</p>
+</blockquote>
+
+<h2 id="创建一个简单的-web-应用程序">创建一个简单的 Web 应用程序</h2>
+<p>现在您可以为一个简单的 Web 应用程序创建一个 Web 控制器，如以下清单（来自 <code class="language-plaintext highlighter-rouge">src/main/java/com/example/spring boot/Hello Controller.java</code>）所示：</p>
+
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span class="kn">package</span> <span class="nn">com.example.springboot</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">org.springframework.web.bind.annotation.GetMapping</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.springframework.web.bind.annotation.RestController</span><span class="o">;</span>
+
+<span class="nd">@RestController</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">HelloController</span> <span class="o">{</span>
+
+	<span class="nd">@GetMapping</span><span class="o">(</span><span class="s">"/"</span><span class="o">)</span>
+	<span class="kd">public</span> <span class="nc">String</span> <span class="nf">index</span><span class="o">()</span> <span class="o">{</span>
+		<span class="k">return</span> <span class="s">"Greetings from Spring Boot!"</span><span class="o">;</span>
+	<span class="o">}</span>
+
+<span class="o">}</span></code></pre></figure>
+
+<p>该类被标记为<code class="language-plaintext highlighter-rouge">@RestController</code>，这意味着它已准备好供 Spring MVC 使用来处理 Web 请求。<code class="language-plaintext highlighter-rouge">@GetMapping</code> 将 <code class="language-plaintext highlighter-rouge">/</code> 映射到 <code class="language-plaintext highlighter-rouge">index()</code> 方法。 当从浏览器调用或在命令行上使用 curl 时，该方法返回纯文本。 这是因为<code class="language-plaintext highlighter-rouge">@RestController</code> 结合了<code class="language-plaintext highlighter-rouge">@Controller</code> 和<code class="language-plaintext highlighter-rouge">@ResponseBody</code>，这两个注释会导致Web 请求返回数据而不是视图。</p>
+
+<h2 id="创建一个应用程序类">创建一个应用程序类</h2>
+<p>Spring Initializr 为您创建了一个简单的应用程序类。 但是，在这种情况下，它太简单了。 您需要修改应用程序类以匹配以下清单（来自 <code class="language-plaintext highlighter-rouge">src/main/java/com/example/springboot/Application.java</code>）：</p>
+
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span class="kn">package</span> <span class="nn">com.example.springboot</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">java.util.Arrays</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">org.springframework.boot.CommandLineRunner</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.springframework.boot.SpringApplication</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.springframework.boot.autoconfigure.SpringBootApplication</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.springframework.context.ApplicationContext</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.springframework.context.annotation.Bean</span><span class="o">;</span>
+
+<span class="nd">@SpringBootApplication</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">Application</span> <span class="o">{</span>
+
+	<span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+		<span class="nc">SpringApplication</span><span class="o">.</span><span class="na">run</span><span class="o">(</span><span class="nc">Application</span><span class="o">.</span><span class="na">class</span><span class="o">,</span> <span class="n">args</span><span class="o">);</span>
+	<span class="o">}</span>
+
+	<span class="nd">@Bean</span>
+	<span class="kd">public</span> <span class="nc">CommandLineRunner</span> <span class="nf">commandLineRunner</span><span class="o">(</span><span class="nc">ApplicationContext</span> <span class="n">ctx</span><span class="o">)</span> <span class="o">{</span>
+		<span class="k">return</span> <span class="n">args</span> <span class="o">-&gt;</span> <span class="o">{</span>
+
+			<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"Let's inspect the beans provided by Spring Boot:"</span><span class="o">);</span>
+
+			<span class="nc">String</span><span class="o">[]</span> <span class="n">beanNames</span> <span class="o">=</span> <span class="n">ctx</span><span class="o">.</span><span class="na">getBeanDefinitionNames</span><span class="o">();</span>
+			<span class="nc">Arrays</span><span class="o">.</span><span class="na">sort</span><span class="o">(</span><span class="n">beanNames</span><span class="o">);</span>
+			<span class="k">for</span> <span class="o">(</span><span class="nc">String</span> <span class="n">beanName</span> <span class="o">:</span> <span class="n">beanNames</span><span class="o">)</span> <span class="o">{</span>
+				<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">beanName</span><span class="o">);</span>
+			<span class="o">}</span>
+
+		<span class="o">};</span>
+	<span class="o">}</span>
+
+<span class="o">}</span></code></pre></figure>
+
+<p><code class="language-plaintext highlighter-rouge">@SpringBootApplication</code> 是一个方便的注解，它添加了以下所有内容：</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">@Configuration</code>：将类标记为应用程序上下文的 bean 定义源。</li>
+  <li><code class="language-plaintext highlighter-rouge">@EnableAutoConfiguration</code>：告诉 Spring Boot 根据类路径设置、其他 bean 和各种属性设置开始添加 bean。例如，如果 <code class="language-plaintext highlighter-rouge">spring-webmvc</code> 在类路径上，则此注释将应用程序标记为 Web 应用程序并激活关键行为，例如设置 <code class="language-plaintext highlighter-rouge">DispatcherServlet</code>。</li>
+  <li><code class="language-plaintext highlighter-rouge">@ComponentScan</code>：告诉 Spring 在 <code class="language-plaintext highlighter-rouge">com/example</code> 包中查找其他组件、配置和服务，让它找到控制器。</li>
+</ul>
+
+<p><code class="language-plaintext highlighter-rouge">main()</code> 方法使用 Spring Boot 的 <code class="language-plaintext highlighter-rouge">SpringApplication.run()</code> 方法来启动应用程序。您是否注意到没有一行 XML？也没有 <code class="language-plaintext highlighter-rouge">web.xml</code> 文件。这个 Web 应用程序是 100% 纯 Java，您不必处理任何管道或基础设施的配置。</p>
+
+<p>还有一个标记为<code class="language-plaintext highlighter-rouge">@Bean</code> 的 <code class="language-plaintext highlighter-rouge">CommandLineRunner</code> 方法，它在启动时运行。它检索由您的应用程序创建或由 Spring Boot 自动添加的所有 bean。它对它们进行分类并打印出来。</p>
+
+<h2 id="运行应用程序">运行应用程序</h2>
+<p>要运行应用程序，请在终端窗口（<code class="language-plaintext highlighter-rouge">complete</code>）目录中运行以下命令：</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">./gradlew bootRun</code></pre></figure>
+
+<p>如果您使用 Maven，请在终端窗口（<code class="language-plaintext highlighter-rouge">complete</code>）目录中运行以下命令：</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">./mvnw spring-boot:run</code></pre></figure>
+
+<p>您应该会看到类似于以下内容的输出：</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">Let<span class="s1">'s inspect the beans provided by Spring Boot:
+application
+beanNameHandlerMapping
+defaultServletHandlerMapping
+dispatcherServlet
+embeddedServletContainerCustomizerBeanPostProcessor
+handlerExceptionResolver
+helloController
+httpRequestHandlerAdapter
+messageSource
+mvcContentNegotiationManager
+mvcConversionService
+mvcValidator
+org.springframework.boot.autoconfigure.MessageSourceAutoConfiguration
+org.springframework.boot.autoconfigure.PropertyPlaceholderAutoConfiguration
+org.springframework.boot.autoconfigure.web.EmbeddedServletContainerAutoConfiguration
+org.springframework.boot.autoconfigure.web.EmbeddedServletContainerAutoConfiguration$DispatcherServletConfiguration
+org.springframework.boot.autoconfigure.web.EmbeddedServletContainerAutoConfiguration$EmbeddedTomcat
+org.springframework.boot.autoconfigure.web.ServerPropertiesAutoConfiguration
+org.springframework.boot.context.embedded.properties.ServerProperties
+org.springframework.context.annotation.ConfigurationClassPostProcessor.enhancedConfigurationProcessor
+org.springframework.context.annotation.ConfigurationClassPostProcessor.importAwareProcessor
+org.springframework.context.annotation.internalAutowiredAnnotationProcessor
+org.springframework.context.annotation.internalCommonAnnotationProcessor
+org.springframework.context.annotation.internalConfigurationAnnotationProcessor
+org.springframework.context.annotation.internalRequiredAnnotationProcessor
+org.springframework.web.servlet.config.annotation.DelegatingWebMvcConfiguration
+propertySourcesBinder
+propertySourcesPlaceholderConfigurer
+requestMappingHandlerAdapter
+requestMappingHandlerMapping
+resourceHandlerMapping
+simpleControllerHandlerAdapter
+tomcatEmbeddedServletContainerFactory
+viewControllerHandlerMapping</span></code></pre></figure>
+
+<p>您可以清楚地看到 <code class="language-plaintext highlighter-rouge">org.springframework.boot.autoconfigure</code> bean。 还有一个<code class="language-plaintext highlighter-rouge">tomcatEmbeddedServletContainerFactory</code>。</p>
+
+<p>现在使用 curl 运行服务（在单独的终端窗口中），通过运行以下命令（显示其输出）：</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>curl localhost:8080
+Greetings from Spring Boot!</code></pre></figure>
+
+<h2 id="添加单元测试">添加单元测试</h2>
+<p>您将希望为您添加的端点添加一个测试，而 Spring Test 为此提供了一些机制。</p>
+
+<p>如果您使用 Gradle，请将以下依赖项添加到您的 <code class="language-plaintext highlighter-rouge">build.gradle</code> 文件中：</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">testImplementation<span class="o">(</span><span class="s1">'org.springframework.boot:spring-boot-starter-test'</span><span class="o">)</span></code></pre></figure>
+
+<p>如果您使用 Maven，请将以下内容添加到您的 <code class="language-plaintext highlighter-rouge">pom.xml</code> 文件中：</p>
+
+<figure class="highlight"><pre><code class="language-xml" data-lang="xml"><span class="nt">&lt;dependency&gt;</span>
+	<span class="nt">&lt;groupId&gt;</span>org.springframework.boot<span class="nt">&lt;/groupId&gt;</span>
+	<span class="nt">&lt;artifactId&gt;</span>spring-boot-starter-test<span class="nt">&lt;/artifactId&gt;</span>
+	<span class="nt">&lt;scope&gt;</span>test<span class="nt">&lt;/scope&gt;</span>
+<span class="nt">&lt;/dependency&gt;</span></code></pre></figure>
+
+<p>现在编写一个简单的单元测试，通过端点模拟 servlet 请求和响应，如以下清单（来自 <code class="language-plaintext highlighter-rouge">src/test/java/com/example/springboot/HelloControllerTest.java</code>）所示：</p>
+
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span class="kn">package</span> <span class="nn">com.example.springboot</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">static</span> <span class="n">org</span><span class="o">.</span><span class="na">hamcrest</span><span class="o">.</span><span class="na">Matchers</span><span class="o">.</span><span class="na">equalTo</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">static</span> <span class="n">org</span><span class="o">.</span><span class="na">springframework</span><span class="o">.</span><span class="na">test</span><span class="o">.</span><span class="na">web</span><span class="o">.</span><span class="na">servlet</span><span class="o">.</span><span class="na">result</span><span class="o">.</span><span class="na">MockMvcResultMatchers</span><span class="o">.</span><span class="na">content</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">static</span> <span class="n">org</span><span class="o">.</span><span class="na">springframework</span><span class="o">.</span><span class="na">test</span><span class="o">.</span><span class="na">web</span><span class="o">.</span><span class="na">servlet</span><span class="o">.</span><span class="na">result</span><span class="o">.</span><span class="na">MockMvcResultMatchers</span><span class="o">.</span><span class="na">status</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">org.junit.jupiter.api.Test</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">org.springframework.beans.factory.annotation.Autowired</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.springframework.boot.test.context.SpringBootTest</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.springframework.http.MediaType</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.springframework.test.web.servlet.MockMvc</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.springframework.test.web.servlet.request.MockMvcRequestBuilders</span><span class="o">;</span>
+
+<span class="nd">@SpringBootTest</span>
+<span class="nd">@AutoConfigureMockMvc</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">HelloControllerTest</span> <span class="o">{</span>
+
+	<span class="nd">@Autowired</span>
+	<span class="kd">private</span> <span class="nc">MockMvc</span> <span class="n">mvc</span><span class="o">;</span>
+
+	<span class="nd">@Test</span>
+	<span class="kd">public</span> <span class="kt">void</span> <span class="nf">getHello</span><span class="o">()</span> <span class="kd">throws</span> <span class="nc">Exception</span> <span class="o">{</span>
+		<span class="n">mvc</span><span class="o">.</span><span class="na">perform</span><span class="o">(</span><span class="nc">MockMvcRequestBuilders</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="s">"/"</span><span class="o">).</span><span class="na">accept</span><span class="o">(</span><span class="nc">MediaType</span><span class="o">.</span><span class="na">APPLICATION_JSON</span><span class="o">))</span>
+				<span class="o">.</span><span class="na">andExpect</span><span class="o">(</span><span class="n">status</span><span class="o">().</span><span class="na">isOk</span><span class="o">())</span>
+				<span class="o">.</span><span class="na">andExpect</span><span class="o">(</span><span class="n">content</span><span class="o">().</span><span class="na">string</span><span class="o">(</span><span class="n">equalTo</span><span class="o">(</span><span class="s">"Greetings from Spring Boot!"</span><span class="o">)));</span>
+	<span class="o">}</span>
+<span class="o">}</span></code></pre></figure>
+
+<p><code class="language-plaintext highlighter-rouge">MockMvc</code> 来自 Spring Test，它允许您通过一组方便的构建器类将 HTTP 请求发送到 <code class="language-plaintext highlighter-rouge">DispatcherServlet</code> 并对结果进行断言。 注意使用 <code class="language-plaintext highlighter-rouge">@AutoConfigureMockMvc</code> 和 <code class="language-plaintext highlighter-rouge">@SpringBootTest</code> 来注入 <code class="language-plaintext highlighter-rouge">MockMvc</code> 实例。 使用了<code class="language-plaintext highlighter-rouge">@SpringBootTest</code>，我们要求创建整个应用程序上下文。 另一种方法是要求 Spring Boot 使用 <code class="language-plaintext highlighter-rouge">@WebMvcTest</code> 仅创建上下文的 Web 层。 在任何一种情况下，Spring Boot 都会自动尝试定位应用程序的主应用程序类，但如果您想构建不同的东西，您可以覆盖它或缩小范围。</p>
+
+<p>除了模拟 HTTP 请求周期外，还可以使用 Spring Boot 编写一个简单的全栈集成测试。 例如，我们可以创建以下测试（来自 <code class="language-plaintext highlighter-rouge">src/test/java/com/example/springboot/HelloControllerIT.java</code>），而不是（或同时）前面显示的模拟测试：</p>
+
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span class="kn">package</span> <span class="nn">com.example.springboot</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">org.junit.jupiter.api.Test</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">org.springframework.beans.factory.annotation.Autowired</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.springframework.boot.test.context.SpringBootTest</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.springframework.boot.test.web.client.TestRestTemplate</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.springframework.http.ResponseEntity</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">static</span> <span class="n">org</span><span class="o">.</span><span class="na">assertj</span><span class="o">.</span><span class="na">core</span><span class="o">.</span><span class="na">api</span><span class="o">.</span><span class="na">Assertions</span><span class="o">.</span><span class="na">assertThat</span><span class="o">;</span>
+
+<span class="nd">@SpringBootTest</span><span class="o">(</span><span class="n">webEnvironment</span> <span class="o">=</span> <span class="nc">SpringBootTest</span><span class="o">.</span><span class="na">WebEnvironment</span><span class="o">.</span><span class="na">RANDOM_PORT</span><span class="o">)</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">HelloControllerIT</span> <span class="o">{</span>
+
+	<span class="nd">@Autowired</span>
+	<span class="kd">private</span> <span class="nc">TestRestTemplate</span> <span class="n">template</span><span class="o">;</span>
+
+    <span class="nd">@Test</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">getHello</span><span class="o">()</span> <span class="kd">throws</span> <span class="nc">Exception</span> <span class="o">{</span>
+        <span class="nc">ResponseEntity</span><span class="o">&lt;</span><span class="nc">String</span><span class="o">&gt;</span> <span class="n">response</span> <span class="o">=</span> <span class="n">template</span><span class="o">.</span><span class="na">getForEntity</span><span class="o">(</span><span class="s">"/"</span><span class="o">,</span> <span class="nc">String</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+        <span class="n">assertThat</span><span class="o">(</span><span class="n">response</span><span class="o">.</span><span class="na">getBody</span><span class="o">()).</span><span class="na">isEqualTo</span><span class="o">(</span><span class="s">"Greetings from Spring Boot!"</span><span class="o">);</span>
+    <span class="o">}</span>
+<span class="o">}</span></code></pre></figure>
+
+<p>由于 <code class="language-plaintext highlighter-rouge">webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT</code>，嵌入式服务器在随机端口上启动，实际端口在 <code class="language-plaintext highlighter-rouge">TestRestTemplate</code> 的基本 URL 中自动配置。</p>
+
+<h2 id="添加生产级服务">添加生产级服务</h2>
+<p>如果您正在为您的企业构建网站，您可能需要添加一些管理服务。 Spring Boot 通过其执行器模块提供了几种此类服务（例如健康、审计、bean 等）。</p>
+
+<p>如果您使用 Gradle，请将以下依赖项添加到您的 <code class="language-plaintext highlighter-rouge">build.gradle</code> 文件中：</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">implementation <span class="s1">'org.springframework.boot:spring-boot-starter-actuator'</span></code></pre></figure>
+
+<p>如果您使用 Maven，请将以下依赖项添加到您的 <code class="language-plaintext highlighter-rouge">pom.xml</code> 文件中：</p>
+
+<figure class="highlight"><pre><code class="language-xml" data-lang="xml"><span class="nt">&lt;dependency&gt;</span>
+	<span class="nt">&lt;groupId&gt;</span>org.springframework.boot<span class="nt">&lt;/groupId&gt;</span>
+	<span class="nt">&lt;artifactId&gt;</span>spring-boot-starter-actuator<span class="nt">&lt;/artifactId&gt;</span>
+<span class="nt">&lt;/dependency&gt;</span></code></pre></figure>
+
+<p>然后重新启动应用程序。 如果您使用 Gradle，请在终端窗口（complete目录）运行以下命令：</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">./gradlew bootRun</code></pre></figure>
+
+<p>如果您使用 Maven，请在终端窗口（在完整目录中）运行以下命令：</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">./mvnw spring-boot:run</code></pre></figure>
+
+<p>您应该会看到一组新的 RESTful 端点已添加到应用程序中。 这些是 Spring Boot 提供的管理服务。 以下清单显示了典型输出：</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">management.endpoint.configprops-org.springframework.boot.actuate.autoconfigure.context.properties.ConfigurationPropertiesReportEndpointProperties
+management.endpoint.env-org.springframework.boot.actuate.autoconfigure.env.EnvironmentEndpointProperties
+management.endpoint.health-org.springframework.boot.actuate.autoconfigure.health.HealthEndpointProperties
+management.endpoint.logfile-org.springframework.boot.actuate.autoconfigure.logging.LogFileWebEndpointProperties
+management.endpoints.jmx-org.springframework.boot.actuate.autoconfigure.endpoint.jmx.JmxEndpointProperties
+management.endpoints.web-org.springframework.boot.actuate.autoconfigure.endpoint.web.WebEndpointProperties
+management.endpoints.web.cors-org.springframework.boot.actuate.autoconfigure.endpoint.web.CorsEndpointProperties
+management.health.diskspace-org.springframework.boot.actuate.autoconfigure.system.DiskSpaceHealthIndicatorProperties
+management.info-org.springframework.boot.actuate.autoconfigure.info.InfoContributorProperties
+management.metrics-org.springframework.boot.actuate.autoconfigure.metrics.MetricsProperties
+management.metrics.export.simple-org.springframework.boot.actuate.autoconfigure.metrics.export.simple.SimpleProperties
+management.server-org.springframework.boot.actuate.autoconfigure.web.server.ManagementServerProperties</code></pre></figure>
+
+<p>执行器公开以下内容：
+*actuator/health
+*actuator</p>
+
+<blockquote>
+  <p>还有一个 <code class="language-plaintext highlighter-rouge">/actuator/shutdown</code> 端点，但默认情况下，它仅通过 JMX 可见。 要将其作为 HTTP 端点启用，请将 management.endpoint.shutdown.enabled=true 添加到 <code class="language-plaintext highlighter-rouge">application.properties</code> 文件并使用 <code class="language-plaintext highlighter-rouge">management.endpoints.web.exposure.include=health,info,shutdown</code> 公开它。 但是，您可能不应该为公开可用的应用程序启用关闭端点。</p>
+</blockquote>
+
+<p>您可以通过运行以下命令来检查应用程序的运行状况：</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>curl localhost:8080/actuator/health
+<span class="o">{</span><span class="s2">"status"</span>:<span class="s2">"UP"</span><span class="o">}</span></code></pre></figure>
+
+<p>因为我们没有启用它，所以请求的端点不可用（因为端点不存在）。</p>
+
+<p>有关每个 REST 端点的更多详细信息以及如何使用 <code class="language-plaintext highlighter-rouge">application.properties</code> 文件（在 <code class="language-plaintext highlighter-rouge">src/main/resources</code> 中）调整它们的设置，请参阅有关端点的文档。</p>
+
+<h2 id="查看-spring-boot-的-starters">查看 Spring Boot 的 Starters</h2>
+<p>您已经看到了 Spring Boot 的一些“入门者”。 您可以在源代码中看到它们。</p>
+
+<h2 id="jar-支持和-groovy-支持">JAR 支持和 Groovy 支持</h2>
+<p>最后一个示例展示了 Spring Boot 如何让您连接您可能不知道需要的 bean。 它还展示了如何打开便捷的管理服务。</p>
+
+<p>然而，Spring Boot 做的远不止这些。 由于 Spring Boot 的加载器模块，它不仅支持传统的 WAR 文件部署，还允许您将可执行的 JAR 放在一起。 各种指南通过 <code class="language-plaintext highlighter-rouge">spring-boot-gradle-plugin</code> 和 <code class="language-plaintext highlighter-rouge">spring-boot-maven-plugin</code> 演示了这种双重支持。</p>
+
+<p>最重要的是，Spring Boot 还支持 Groovy，让您只需一个文件即可构建 Spring MVC Web 应用程序。</p>
+
+<p>创建一个名为 <code class="language-plaintext highlighter-rouge">app.groovy</code> 的新文件并将以下代码放入其中：</p>
+
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span class="nd">@RestController</span>
+<span class="kd">class</span> <span class="nc">ThisWillActuallyRun</span> <span class="o">{</span>
+
+    <span class="nd">@GetMapping</span><span class="o">(</span><span class="s">"/"</span><span class="o">)</span>
+    <span class="nc">String</span> <span class="nf">home</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="s">"Hello, World!"</span>
+    <span class="o">}</span>
+
+<span class="o">}</span></code></pre></figure>
+
+<p>文件在哪里并不重要。 您甚至可以在一条推文中放入这么小的应用程序！
+接下来，安装 Spring Boot 的 CLI。</p>
+
+<p>通过运行以下命令来运行 Groovy 应用程序：</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>spring run app.groovy</code></pre></figure>
+
+<p>关闭之前的应用程序，以避免端口冲突。
+从不同的终端窗口，运行以下 curl 命令（显示其输出）：</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>curl localhost:8080
+Hello, World!</code></pre></figure>
+
+<p>Spring Boot 通过向代码动态添加关键注释并使用 Groovy Grape 拉下使应用程序运行所需的库来实现这一点。</p>
+
+<h2 id="概括">概括</h2>
+<p>恭喜！ 您使用 Spring Boot 构建了一个简单的 Web 应用程序，并了解了它如何加快您的开发速度。 您还打开了一些方便的制作服务。 这只是 Spring Boot 可以做的一小部分。 有关更多信息，请参阅 Spring Boot 的在线文档。</p>
+:ET

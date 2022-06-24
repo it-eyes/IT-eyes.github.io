@@ -1,0 +1,192 @@
+I"�L<p>本指南将引导您完成使用 Spring 创建“Hello, World”RESTful Web 服务的过程。</p>
+
+<h2 id="你将建造什么">你将建造什么</h2>
+<p>您将构建一个在 <code class="language-plaintext highlighter-rouge">http://localhost:8080/greeting</code> 处接受 HTTP GET 请求的服务。</p>
+
+<p>它将以 JSON 表示的问候进行响应，如以下清单所示：</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="o">{</span><span class="s2">"id"</span>:1,<span class="s2">"content"</span>:<span class="s2">"Hello, World!"</span><span class="o">}</span></code></pre></figure>
+
+<p>您可以使用查询字符串中的可选<code class="language-plaintext highlighter-rouge">name</code>参数自定义问候语，如以下清单所示：</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">http://localhost:8080/greeting?name<span class="o">=</span>User</code></pre></figure>
+
+<p><code class="language-plaintext highlighter-rouge">name</code> 参数值覆盖 <code class="language-plaintext highlighter-rouge">World</code> 的默认值并反映在响应中，如以下清单所示：</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="o">{</span><span class="s2">"id"</span>:1,<span class="s2">"content"</span>:<span class="s2">"Hello, User!"</span><span class="o">}</span></code></pre></figure>
+
+<h2 id="你需要什么">你需要什么</h2>
+
+<ul>
+  <li>约15分钟</li>
+  <li>最喜欢的文本编辑器或 IDE</li>
+  <li><a href="https://www.oracle.com/java/technologies/downloads/">JDK 1.8</a> 或更高版本</li>
+  <li><a href="http://www.gradle.org/downloads">Gradle 4+</a> 或<a href="https://maven.apache.org/download.cgi"> Maven 3.2+</a></li>
+  <li>您还可以将代码直接导入 IDE：
+    <ul>
+      <li><a href="https://spring.io/guides/gs/sts">Spring Tool Suite (STS)</a></li>
+      <li><a href="https://spring.io/guides/gs/intellij-idea/">IntelliJ IDEA</a></li>
+    </ul>
+  </li>
+</ul>
+
+<h2 id="如何完成本指南">如何完成本指南</h2>
+<p>像大多数 <a href="https://spring.io/guides">Spring 入门指南</a>一样，您可以从头开始并完成每个步骤，也可以绕过您已经熟悉的基本设置步骤。 无论哪种方式，您最终都会得到工作代码。</p>
+
+<p>要从头开始，请继续从 <a href="##从SpringInitializr开始">Spring Initializr</a> 开始。</p>
+
+<p>要跳过基础知识，请执行以下操作：</p>
+
+<ul>
+  <li><a href="https://github.com/spring-guides/gs-spring-boot/archive/main.zip">下载</a>并解压本指南的源代码库，或使用 Git 克隆它： <code class="language-plaintext highlighter-rouge">git clone https://github.com/spring-guides/gs-spring-boot.git</code></li>
+  <li>cd 进入 <code class="language-plaintext highlighter-rouge">gs-spring-boot/initial</code></li>
+  <li>跳转到创建一个简单的 Web 应用程序。</li>
+</ul>
+
+<p>完成后，您可以对照 <code class="language-plaintext highlighter-rouge">gs-spring-boot/complete</code> 中的代码检查结果。</p>
+
+<h2 id="从springinitializr开始">从SpringInitializr开始</h2>
+<p>您可以使用<a href="https://start.spring.io/#!type=maven-project&amp;language=java&amp;platformVersion=2.5.5&amp;packaging=jar&amp;jvmVersion=11&amp;groupId=com.example&amp;artifactId=spring-boot&amp;name=spring-boot&amp;description=Demo%20project%20for%20Spring%20Boot&amp;packageName=com.example.spring-boot&amp;dependencies=web">pre-initialized project</a>并单击 Generate 下载 ZIP 文件。 此项目配置为适合本教程中的示例。</p>
+
+<p>手动初始化项目：</p>
+
+<ol>
+  <li>导航到 <a href="https://start.spring.io/">https://start.spring.io</a>。 该服务提取应用程序所需的所有依赖项，并为您完成大部分设置。</li>
+  <li>选择 Gradle 或 Maven 以及您要使用的语言。 本指南假定您选择了 Java。</li>
+  <li>单击<strong>Dependencies</strong>并选择<strong>Spring Web</strong>。</li>
+  <li>单击<strong>Generate</strong>。</li>
+  <li>下载生成的 ZIP 文件，该文件是根据您的选择配置的 Web 应用程序的存档。</li>
+</ol>
+
+<blockquote>
+  <p>如果您的 IDE 具有 Spring Initializr 集成，您可以从您的 IDE 完成此过程。</p>
+</blockquote>
+
+<blockquote>
+  <p>你也可以从 Github 上 fork 项目并在你的 IDE 或其他编辑器中打开它。</p>
+</blockquote>
+
+<h2 id="创建资源表示类">创建资源表示类</h2>
+<p>现在您已经设置了项目和构建系统，您可以创建您的 Web 服务。</p>
+
+<p>从考虑服务交互开始这个过程。</p>
+
+<p>该服务将处理 <code class="language-plaintext highlighter-rouge">/greeting</code> 的 <code class="language-plaintext highlighter-rouge">GET</code> 请求，可以选择在查询字符串中使用<code class="language-plaintext highlighter-rouge">name</code>参数。 <code class="language-plaintext highlighter-rouge">GET</code> 请求应返回 <code class="language-plaintext highlighter-rouge">200 OK</code> 响应，其中包含表示问候的正文中的 JSON。 它应该类似于以下输出：</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="o">{</span>
+    <span class="s2">"id"</span>: 1,
+    <span class="s2">"content"</span>: <span class="s2">"Hello, World!"</span>
+<span class="o">}</span></code></pre></figure>
+
+<p><code class="language-plaintext highlighter-rouge">id</code> 字段是问候语的唯一标识符，<code class="language-plaintext highlighter-rouge">content</code>是问候语的文本表示。</p>
+
+<p>要对问候表示建模，请创建一个资源表示类。 为此，请提供一个普通的旧 Java 对象，其中包含 <code class="language-plaintext highlighter-rouge">id</code> 和<code class="language-plaintext highlighter-rouge">content</code>数据的字段、构造函数和访问器，如以下清单（来自 <code class="language-plaintext highlighter-rouge">src/main/java/com/example/restservice/Greeting.java</code>）所示：</p>
+
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span class="kn">package</span> <span class="nn">com.example.restservice</span><span class="o">;</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">Greeting</span> <span class="o">{</span>
+
+	<span class="kd">private</span> <span class="kd">final</span> <span class="kt">long</span> <span class="n">id</span><span class="o">;</span>
+	<span class="kd">private</span> <span class="kd">final</span> <span class="nc">String</span> <span class="n">content</span><span class="o">;</span>
+
+	<span class="kd">public</span> <span class="nf">Greeting</span><span class="o">(</span><span class="kt">long</span> <span class="n">id</span><span class="o">,</span> <span class="nc">String</span> <span class="n">content</span><span class="o">)</span> <span class="o">{</span>
+		<span class="k">this</span><span class="o">.</span><span class="na">id</span> <span class="o">=</span> <span class="n">id</span><span class="o">;</span>
+		<span class="k">this</span><span class="o">.</span><span class="na">content</span> <span class="o">=</span> <span class="n">content</span><span class="o">;</span>
+	<span class="o">}</span>
+
+	<span class="kd">public</span> <span class="kt">long</span> <span class="nf">getId</span><span class="o">()</span> <span class="o">{</span>
+		<span class="k">return</span> <span class="n">id</span><span class="o">;</span>
+	<span class="o">}</span>
+
+	<span class="kd">public</span> <span class="nc">String</span> <span class="nf">getContent</span><span class="o">()</span> <span class="o">{</span>
+		<span class="k">return</span> <span class="n">content</span><span class="o">;</span>
+	<span class="o">}</span>
+<span class="o">}</span></code></pre></figure>
+
+<blockquote>
+  <p>此应用程序使用 Jackson JSON 库自动将 Greeting 类型的实例编组为 JSON。 网络启动器默认包含 Jackson。</p>
+</blockquote>
+
+<h2 id="创建资源控制器">创建资源控制器</h2>
+<p>在 Spring 构建 RESTful Web 服务的方法中，HTTP 请求由控制器处理。 这些组件由 <code class="language-plaintext highlighter-rouge">@RestController</code> 注释标识，下面清单中显示的 <code class="language-plaintext highlighter-rouge">GreetingController</code>（来自 <code class="language-plaintext highlighter-rouge">src/main/java/com/example/restservice/GreetingController.java</code>）通过返回 <code class="language-plaintext highlighter-rouge">Greeting</code> 的新实例来处理 <code class="language-plaintext highlighter-rouge">/greeting</code> 的 <code class="language-plaintext highlighter-rouge">GET</code> 请求类：</p>
+
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span class="kn">package</span> <span class="nn">com.example.restservice</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">java.util.concurrent.atomic.AtomicLong</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">org.springframework.web.bind.annotation.GetMapping</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.springframework.web.bind.annotation.RequestParam</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.springframework.web.bind.annotation.RestController</span><span class="o">;</span>
+
+<span class="nd">@RestController</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">GreetingController</span> <span class="o">{</span>
+
+	<span class="kd">private</span> <span class="kd">static</span> <span class="kd">final</span> <span class="nc">String</span> <span class="n">template</span> <span class="o">=</span> <span class="s">"Hello, %s!"</span><span class="o">;</span>
+	<span class="kd">private</span> <span class="kd">final</span> <span class="nc">AtomicLong</span> <span class="n">counter</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">AtomicLong</span><span class="o">();</span>
+
+	<span class="nd">@GetMapping</span><span class="o">(</span><span class="s">"/greeting"</span><span class="o">)</span>
+	<span class="kd">public</span> <span class="nc">Greeting</span> <span class="nf">greeting</span><span class="o">(</span><span class="nd">@RequestParam</span><span class="o">(</span><span class="n">value</span> <span class="o">=</span> <span class="s">"name"</span><span class="o">,</span> <span class="n">defaultValue</span> <span class="o">=</span> <span class="s">"World"</span><span class="o">)</span> <span class="nc">String</span> <span class="n">name</span><span class="o">)</span> <span class="o">{</span>
+		<span class="k">return</span> <span class="k">new</span> <span class="nf">Greeting</span><span class="o">(</span><span class="n">counter</span><span class="o">.</span><span class="na">incrementAndGet</span><span class="o">(),</span> <span class="nc">String</span><span class="o">.</span><span class="na">format</span><span class="o">(</span><span class="n">template</span><span class="o">,</span> <span class="n">name</span><span class="o">));</span>
+	<span class="o">}</span>
+<span class="o">}</span></code></pre></figure>
+
+<p>这个控制器简洁明了，但引擎盖下有很多事情要做。我们一步一步分解。</p>
+
+<p><code class="language-plaintext highlighter-rouge">@GetMapping</code> 注解确保对 <code class="language-plaintext highlighter-rouge">/greeting</code> 的 HTTP GET 请求映射到 <code class="language-plaintext highlighter-rouge">greeting()</code> 方法。</p>
+
+<blockquote>
+  <p>其他 HTTP 动词有伴随注释（例如，<code class="language-plaintext highlighter-rouge">@PostMapping</code> 用于 POST）。还有一个 <code class="language-plaintext highlighter-rouge">@RequestMapping</code> 注释，它们都派生自，并且可以用作同义词（例如 <code class="language-plaintext highlighter-rouge">@RequestMapping(method=GET)</code>）。</p>
+</blockquote>
+
+<p><code class="language-plaintext highlighter-rouge">@RequestParam</code> 将查询字符串参数 <code class="language-plaintext highlighter-rouge">name</code> 的值绑定到 <code class="language-plaintext highlighter-rouge">greeting()</code> 方法的 <code class="language-plaintext highlighter-rouge">name</code> 参数中。如果请求中没有 <code class="language-plaintext highlighter-rouge">name</code> 参数，则使用 <code class="language-plaintext highlighter-rouge">World</code> 的 <code class="language-plaintext highlighter-rouge">defaultValue</code>。</p>
+
+<p>方法体的实现基于来自<code class="language-plaintext highlighter-rouge">counter</code>的下一个值创建并返回具有 <code class="language-plaintext highlighter-rouge">id</code> 和 <code class="language-plaintext highlighter-rouge">content</code> 属性的新 <code class="language-plaintext highlighter-rouge">Greetin</code>g 对象，并使用greeting <code class="language-plaintext highlighter-rouge">templete</code>格式化给定<code class="language-plaintext highlighter-rouge">name</code>。</p>
+
+<p>传统 MVC 控制器和前面显示的 RESTful Web 服务控制器之间的一个关键区别是 HTTP 响应主体的创建方式。这个 RESTful Web 服务控制器不依赖于视图技术将问候数据在服务器端呈现为 HTML，而是填充并返回一个 <code class="language-plaintext highlighter-rouge">Greeting</code> 对象。对象数据将作为 JSON 直接写入 HTTP 响应。</p>
+
+<p>此代码使用 Spring <code class="language-plaintext highlighter-rouge">@RestController</code> 注释，它将类标记为控制器，其中每个方法都返回域对象而不是视图。它是同时包含<code class="language-plaintext highlighter-rouge">@Controller</code> 和<code class="language-plaintext highlighter-rouge">@ResponseBody</code> 的简写。</p>
+
+<p><code class="language-plaintext highlighter-rouge">Greeting</code> 对象必须转换为 JSON。由于 Spring 的 HTTP 消息转换器支持，您无需手动进行此转换。因为 <a href="https://github.com/FasterXML/jackson">Jackson 2</a> 在类路径上，所以会自动选择 Spring 的 <code class="language-plaintext highlighter-rouge">MappingJackson2HttpMessageConverter</code> 将 <code class="language-plaintext highlighter-rouge">Greeting</code> 实例转换为 JSON。</p>
+
+<p><code class="language-plaintext highlighter-rouge">@SpringBootApplication</code> 是一个方便的注解，它添加了以下所有内容：</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">@Configuration</code>：将类标记为应用程序上下文的 bean 定义源。</li>
+  <li><code class="language-plaintext highlighter-rouge">@EnableAutoConfiguration</code>：告诉 Spring Boot 根据类路径设置、其他 bean 和各种属性设置开始添加 bean。例如，如果 <code class="language-plaintext highlighter-rouge">spring-webmvc</code> 在类路径上，则此注释将应用程序标记为 Web 应用程序并激活关键行为，例如设置 <code class="language-plaintext highlighter-rouge">DispatcherServlet</code>。</li>
+  <li><code class="language-plaintext highlighter-rouge">@ComponentScan</code>：告诉 Spring 在 <code class="language-plaintext highlighter-rouge">com/example</code> 包中查找其他组件、配置和服务，让它找到控制器。</li>
+</ul>
+
+<p><code class="language-plaintext highlighter-rouge">main()</code> 方法使用 Spring Boot 的 <code class="language-plaintext highlighter-rouge">SpringApplication.run()</code> 方法来启动应用程序。您是否注意到没有一行 XML？也没有 <code class="language-plaintext highlighter-rouge">web.xml</code> 文件。这个 Web 应用程序是 100% 纯 Java，您不必处理任何管道或基础设施的配置。</p>
+
+<h2 id="构建一个可执行的-jar">构建一个可执行的 JAR</h2>
+<p>您可以使用 Gradle 或 Maven 从命令行运行应用程序。您还可以构建一个包含所有必要依赖项、类和资源的单个可执行 JAR 文件并运行它。构建可执行 jar 可以在整个开发生命周期、跨不同环境等中轻松地作为应用程序交付、版本化和部署服务。</p>
+
+<p>如果您使用 Gradle，则可以使用 <code class="language-plaintext highlighter-rouge">./gradlew bootRun</code> 运行应用程序。或者，您可以使用 <code class="language-plaintext highlighter-rouge">./gradlew build</code> 构建 JAR 文件，然后运行 ​​JAR 文件，如下所示：</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">java <span class="nt">-jar</span> build/libs/gs-rest-service-0.1.0.jar</code></pre></figure>
+
+<p>如果您使用 Maven，则可以使用 <code class="language-plaintext highlighter-rouge">./mvnw spring-boot:run</code> 运行应用程序。 或者，您可以使用 <code class="language-plaintext highlighter-rouge">./mvnw clean package</code> 构建 JAR 文件，然后运行 JAR 文件，如下所示：</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">java <span class="nt">-jar</span> target/gs-rest-service-0.1.0.jar</code></pre></figure>
+
+<blockquote>
+  <p>此处描述的步骤创建了一个可运行的 JAR。 您还可以构建经典的 WAR 文件。
+显示记录输出。 该服务应在几秒钟内启动并运行。</p>
+</blockquote>
+
+<h2 id="测试服务">测试服务</h2>
+<p>现在服务已经启动，访问 <code class="language-plaintext highlighter-rouge">http://localhost:8080/greeting</code>，你应该会看到：</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="o">{</span><span class="s2">"id"</span>:1,<span class="s2">"content"</span>:<span class="s2">"Hello, World!"</span><span class="o">}</span></code></pre></figure>
+
+<p>通过访问 <code class="language-plaintext highlighter-rouge">http://localhost:8080/greeting?name=User</code> 提供<code class="language-plaintext highlighter-rouge">name</code>查询字符串参数。 注意 <code class="language-plaintext highlighter-rouge">content</code> 属性的值是如何从 <code class="language-plaintext highlighter-rouge">Hello, World!</code>到<code class="language-plaintext highlighter-rouge">Hello,User!</code> 改变的，如以下清单所示：</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="o">{</span><span class="s2">"id"</span>:2,<span class="s2">"content"</span>:<span class="s2">"Hello, User!"</span><span class="o">}</span></code></pre></figure>
+
+<p>此更改表明 <code class="language-plaintext highlighter-rouge">GreetingController</code> 中的 <code class="language-plaintext highlighter-rouge">@RequestParam</code> 安排按预期工作。 <code class="language-plaintext highlighter-rouge">name</code> 参数已被赋予 <code class="language-plaintext highlighter-rouge">World</code> 的默认值，但可以通过查询字符串显式覆盖。</p>
+
+<p>还要注意 <code class="language-plaintext highlighter-rouge">id</code> 属性如何从 <code class="language-plaintext highlighter-rouge">1</code> 更改为 <code class="language-plaintext highlighter-rouge">2</code>。这证明您正在处理多个请求中的同一个 <code class="language-plaintext highlighter-rouge">GreetingController</code> 实例，并且它的<code class="language-plaintext highlighter-rouge">counter</code>字段在每次调用时都按预期递增。</p>
+
+<h2 id="概括">概括</h2>
+<p>恭喜！ 您刚刚使用 Spring 开发了一个 RESTful Web 服务。</p>
+:ET
