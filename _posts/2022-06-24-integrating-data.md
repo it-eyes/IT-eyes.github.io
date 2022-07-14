@@ -314,3 +314,6 @@ public class FlowTests {
 
 ## 概括
 恭喜！ 您已经开发了一个简单的应用程序，它使用 Spring Integration 从 spring.io 获取博客文章、处理它们并将它们写入文件。
+
+
+更多详情请访问：[IT-eyes](https://it-eyes.top)

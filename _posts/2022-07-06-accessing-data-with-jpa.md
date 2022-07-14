@@ -223,6 +223,7 @@ public class AccessingDataJpaApplication {
 `AccessingDataJpaApplication` 类包含一个 `demo()` 方法，该方法使 `CustomerRepository` 通过一些测试。首先，它从 Spring 应用程序上下文中获取 `CustomerRepository`。然后它保存了一些 `Customer` 对象，演示了 `save()` 方法并设置了一些要使用的数据。接下来，它调用 `findAll()` 从数据库中获取所有 `Customer` 对象。然后它调用 `findById()` 通过其 ID 获取单个`Customer`。最后，它调用 `findByLastName()` 来查找姓氏为“Bauer”的所有客户。 `demo()` 方法返回一个 `CommandLineRunner` bean，它会在应用程序启动时自动运行代码。
 
 >默认情况下，Spring Boot 启用 JPA 存储库支持并在 `@SpringBootApplication` 所在的包（及其子包）中查找。如果您的配置具有位于不可见包中的 JPA 存储库接口定义，则可以使用 `@EnableJpaRepositories` 及其类型安全的 `basePackageClasses=MyRepository.class` 参数指出备用包。
+
 ## 构建一个可执行的 JAR
 您可以使用 Gradle 或 Maven 从命令行运行应用程序。您还可以构建一个包含所有必要依赖项、类和资源的单个可执行 JAR 文件并运行它。构建可执行 jar 可以在整个开发生命周期、跨不同环境等中轻松地作为应用程序交付、版本化和部署服务。
 
@@ -256,3 +257,5 @@ Customer[id=3, firstName='Kim', lastName='Bauer']
 ## 概括
 恭喜！ 您已经编写了一个简单的应用程序，该应用程序使用 Spring Data JPA 将对象保存到数据库并从数据库中获取它们，而无需编写具体的存储库实现。
 
+
+更多详情请访问：[IT-eyes](https://it-eyes.top)

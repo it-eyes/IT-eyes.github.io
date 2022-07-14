@@ -67,3 +67,6 @@ mvnw spring-boot:run
 ![](../assets/img/post/quick-img2-ac5ae88c60ffaa062234a580f9f1abc3.png)
 这里的最后几行告诉我们Spring已经开始了。 Spring Boot 的嵌入式 Apache Tomcat 服务器充当 Web 服务器，并正在侦听端口上的请求。 打开浏览器并在顶部的地址栏中输入 `http://localhost:8080/hello`。 你应该得到一个很好的友好回应，如下所示：
 ![](../assets/img/post/quick-img3-afa0a1fe446db8e3c8c7a8d9ca532d23.png)
+
+
+更多详情请访问：[IT-eyes](https://it-eyes.top)

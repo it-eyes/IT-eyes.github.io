@@ -283,18 +283,4 @@ Teens (between 12 and 20):
 恭喜！ 您设置了一个 Apache Geode 缓存客户端，存储了简单的实体，并开发了快速查询。
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+更多详情请访问：[IT-eyes](https://it-eyes.top)

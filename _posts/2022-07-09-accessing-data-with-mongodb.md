@@ -264,3 +264,6 @@ Customer[id=51df1b0a3004cb49c50210f9, firstName='Bob', lastName='Smith']
 恭喜！ 您设置了一个 MongoDB 服务器并编写了一个简单的应用程序，该应用程序使用 Spring Data MongoDB 将对象保存到数据库并从数据库中获取它们，所有这些都没有编写具体的存储库实现。
 
 如果您想轻松地使用基于超媒体的 RESTful 前端公开 MongoDB 存储库，请阅读[使用 REST 访问 MongoDB 数据](https://spring.io/guides/gs/accessing-mongodb-data-rest)。
+
+
+更多详情请访问：[IT-eyes](https://it-eyes.top)
