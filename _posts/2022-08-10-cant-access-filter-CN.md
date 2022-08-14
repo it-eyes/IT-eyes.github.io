@@ -17,6 +17,8 @@ comments: true
 
 ## 解决
 因为`WebSecurityConfigurerAdapter`内部依赖`spring-boot-starter-web`,但项目中没有引入。需要在pom.xml中引入`spring-boot-starter-web`。
-{% highlight java %}
+{% highlight bash %}
 ssh-keygen -t rsa -m PEM
 {% endhighlight %}
+
+更多详情请访问：[IT-eyes](https://it-eyes.top)
